@@ -13,6 +13,7 @@
                  [cljs-ajax "0.2.6"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
                  [fogus/ring-edn "0.2.0"]
+                 [org.clojure/core.match "0.2.1"]
                  [ring/ring-json "0.3.1"]
                  [om "0.5.0"]]
 
