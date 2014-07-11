@@ -19,7 +19,7 @@
 ;;-- render funcs
 (defn render-status-table [status]
   (dom/table #js {:className "table table-bordered"}
-    (dom/tbody nil
+    (dom/tbody #js {:style #js {:fontSize "small"}}
       (dom/tr nil
         (dom/td #js {:style #js {:width "75%"}} "Upload Data")
         (dom/td nil (if (< status 1) "in progress" "done")))  ;; tr

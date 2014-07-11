@@ -67,11 +67,24 @@
 (defn form-row-queries []
   (fn [the-item owner]
     (om/component
-     (let [{:keys [shape sample quickcheck-results perfcheck-results]} the-item]
+     (let [{:keys [shape sample ns count quickcheck-results perfcheck-results]} the-item]
        (dom/tr nil
                (dom/td #js {:style #js {:width "45%"}} shape)
-               (dom/td nil sample)
-               )))))
+               (dom/td nil (dom/div #js {:style #js {:fontSize "small"}}
+                             (dom/table #js {:className "table center-block table-condensed"
+                                             :style #js {:width "90%"
+                                                         :fontSize "small"}}
+                               (dom/tr nil
+                                  (dom/td #js {:colSpan "2"}
+                                       (dom/span nil (str sample))))
+                               (dom/tr nil
+                                  (dom/td nil "ns")
+                                  (dom/td nil ns))
+                               (dom/tr nil
+                                  (dom/td nil "count")
+                                  (dom/td nil count)
+                                       )))
+               ))))))
 
 (defn form-row-quickcheck []
   (fn [the-item owner]
@@ -79,7 +92,7 @@
      (let [{:keys [shape result]} the-item]
        (dom/tr #js {:className (result-row-color result)}
                (dom/td #js {:style #js {:width "45%"}} shape)
-               (dom/td nil result)
+               (dom/td nil  result)
                )))))
 
 (defn form-row-perfcheck []
@@ -161,6 +174,7 @@
   [res app]
   (om/transact! app :count inc)  ;; change it to done
   (om/update! app :state :show-query-screen)
+  (om/update! app :queries (:queries res))
 
   (.log js/console (str "received new queries: " (:queries res)))
 
@@ -199,7 +213,10 @@
   ;;- set screen to render screen
   (om/transact! app :state #(case % :upload-screen :run-test-screen :upload-screen))
 
-  (PUT "/log" {:params {:log "myLog"}
+  (PUT "/log" {:params {:log "2014-06-04T23:07:27.703+0000 [conn7] query mmsdbrrdcache.data.metricCache query: { _id: \"f85b0fd10e809a4bfcf87eb2d2f00a16\" } planSummary: IDHACK ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:24 nreturned:1 reslen:278 0ms
+2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.canonicalHosts query: { cid: ObjectId('538fa43177143b548c76ecfd') } planSummary: IXSCAN { cid: 1 } ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:140 nreturned:2 reslen:410 0ms
+2014-07-10T16:56:42.625-0700 [conn3] query test.foo query: { a: { $lte: 100.0 }, b: { $gt: 1000.0 } } planSummary: COLLSCAN ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:7505 nreturned:0 reslen:20 7ms
+2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.hostClusters query: { $query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, $orderby: { name: 1 } } planSummary: IXSCAN { groupId: 1, name: 1 } ntoreturn:20 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:118 nreturned:0 reslen:20 0ms"}
                :format (edn-request-format)
                :response-format (edn-response-format)
                :handler #(handler-log-upload % app)

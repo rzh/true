@@ -5,8 +5,11 @@
 ;;            [ring.middleware.json :refer :all]
             [compojure.core :refer [defroutes GET PUT POST]]
             [compojure.route :as route]
+            [thomas.analyzer :as a]
             [compojure.handler :as handler]))
 
+
+(def _log (atom ""))
 
 (defn index []
   (file-response "public/html/index.html" {:root "resources"}))
@@ -26,15 +29,27 @@
   "receive the log"
   [log]
   (prn (str "received " log))
+  (reset! _log log)
   (generate-response {:uploaded log} 200)
   )
 
 
+(defn analyze-log []
+  (let [x (map a/line-to-map (a/get-lines-from-string @_log))]
+    (into []
+      (for [[k v] (group-by :q_norm x)]
+        {:shape  k
+         :sample (take 1 (distinct (map #(:s %) v)))
+         :ns (count (distinct (map #(:ns %) v)))
+         :count (count v)
+         :q (take 1 (distinct (map #(:q %) v)))
+         :query-plan (distinct (map #(:q_plan %) v))
+         }))))
+
 (defn return-new-queries []
-  (generate-response {:queries [
-                                {:shape "_id" :sample "{_id: 100}"}
-                                {:shape "fieldname" :sample "{a: 100}"}
-                                ]}))
+  (prn (str "log is " (analyze-log)))
+
+  (generate-response {:queries (analyze-log) }))
 
 (defn return-quick-check-results []
   (generate-response {:results [
