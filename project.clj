@@ -10,6 +10,11 @@
                  [com.novemberain/monger "2.0.0-rc1"]
                  [compojure "1.1.6"]
                  [ring/ring "1.3.0"]
+                 [com.velisco/herbert "0.6.2"]
+                 [domina "1.0.2"]
+
+                 [criterium "0.4.3"]
+                 [org.clojure/test.check "0.5.8"]
                  [cljs-ajax "0.2.6"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
                  [fogus/ring-edn "0.2.0"]

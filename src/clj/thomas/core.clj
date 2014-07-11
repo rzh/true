@@ -6,6 +6,7 @@
             [compojure.core :refer [defroutes GET PUT POST]]
             [compojure.route :as route]
             [thomas.analyzer :as a]
+            [thomas.test :as t]
             [compojure.handler :as handler]))
 
 
@@ -43,25 +44,48 @@
          :ns (count (distinct (map #(:ns %) v)))
          :count (count v)
          :q (take 1 (distinct (map #(:q %) v)))
+         :schema (t/query->schema (:q (get v 0)))
          :query-plan (distinct (map #(:q_plan %) v))
          }))))
 
 (defn return-new-queries []
-  (prn (str "log is " (analyze-log)))
+;;  (prn (str "log is " (analyze-log)))
 
   (generate-response {:queries (analyze-log) }))
 
+
+(defn run-quick-check
+  []
+  (let [x (map a/line-to-map (a/get-lines-from-string @_log))]
+    (into {}
+      (for [[k v] (group-by :q_norm x)]
+        (let [re
+              (t/quick-check-query v)]
+          (prn "___ " re)
+          [ k {:result (if (:result re) "pass" "fail")
+               :qc-log (str re)
+               :schema (t/query->perfschema (:q (get v 0)))}]
+          )
+        )
+  )))
+
+(defn run-perf-check
+  []
+  (let [x (map a/line-to-map (a/get-lines-from-string @_log))]
+    (into {}
+      (for [[k v] (group-by :q_norm x)]
+        [ k { :result "pass"
+              :script (t/schema->benchrun (t/query->perfschema (:q (get v 0))))
+              }]
+        )
+  )))
+
+
 (defn return-quick-check-results []
-  (generate-response {:results [
-                                {:shape "_id" :result "{_id: 100}"}
-                                {:shape "fieldname" :result "{a: 100}"}
-                                ]}))
+  (generate-response {:results (run-quick-check)}))
 
 (defn return-perf-check-results []
-  (generate-response {:results [
-                                {:shape "_id" :result "{_id: 100}"}
-                                {:shape "fieldname" :result "{a: 100}"}
-                                ]}))
+  (generate-response {:results (run-perf-check)}))
 
 (defroutes routes
   (GET "/" [] (index))
