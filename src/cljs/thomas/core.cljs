@@ -291,11 +291,11 @@
    (dom/h2 nil "upload your log")
    (dom/div #js {:className "form-group"}
      (dom/label nil "Log:")
-     (dom/textarea #js {:className "form-control"  :id "log" :rows "8"} "2014-06-04T23:07:27.703+0000 [conn7] query mmsdbrrdcache.data.metricCache query: { _id: \"f85b0fd10e809a4bfcf87eb2d2f00a16\" } planSummary: IDHACK ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:24 nreturned:1 reslen:278 0ms
-2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.canonicalHosts query: { cid: ObjectId('538fa43177143b548c76ecfd') } planSummary: IXSCAN { cid: 1 } ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:140 nreturned:2 reslen:410 0ms
-2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.canonicalHosts query: { cid: ObjectId('538fa43177143b548c76ecfd') } planSummary: IXSCAN { cid: 1 } ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:140 nreturned:2 reslen:410 0ms
+     (dom/textarea #js {:className "form-control"  :id "log" :rows "8"} "2014-06-04T23:07:27.703+0000 [conn7] query dddd.data.metricCache query: { _id: "1111" } planSummary: IDHACK ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:24 nreturned:1 reslen:278 0ms
+2014-06-04T23:07:27.745+0000 [conn50] query dconfig.config.canonicalHosts query: { cid: ObjectId('aaaa') } planSummary: IXSCAN { cid: 1 } ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:140 nreturned:2 reslen:410 0ms
+2014-06-04T23:07:27.745+0000 [conn50] query dconfig.config.canonicalHosts query: { cid: ObjectId('cccc') } planSummary: IXSCAN { cid: 1 } ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:140 nreturned:2 reslen:410 0ms
 2014-07-10T16:56:42.625-0700 [conn3] query test.foo query: { a: { $lte: 100.0 }, b: { $gte: 1000.0 } } planSummary: COLLSCAN ntoreturn:0 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:7505 nreturned:0 reslen:20 7ms
-2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.hostClusters query: { $query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, $orderby: { name: 1 } } planSummary: IXSCAN { groupId: 1, name: 1 } ntoreturn:20 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:118 nreturned:0 reslen:20 0ms")
+2014-06-04T23:07:27.745+0000 [conn50] query dconfig.config.hostClusters query: { $query: { groupId: ObjectId('5555'), active: true }, $orderby: { name: 1 } } planSummary: IXSCAN { groupId: 1, name: 1 } ntoreturn:20 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:118 nreturned:0 reslen:20 0ms")
      (dom/button #js {:type "submit" :className "btn btn-default" :onClick #(submit-log app)} "Submit")
    ) ;; form-group
    ))
