@@ -17,6 +17,15 @@
 (def db (mg/get-db (mg/connect) "test"))
 
 
+(defn mongo-query-map [_val db coll]
+  (mc/remove db coll) ;; remove all doc
+  (if (= (:cid _val) 100)
+    (mc/insert db coll {:cid 101} )
+    (mc/insert db coll _val )
+    )
+
+  (= _val (apply dissoc (mc/find-one-as-map db coll _val) [:_id])))
+
 ;; test query shapes
 ;; :a int
 (defn mongo-query-key [_val _key db coll]
@@ -178,35 +187,26 @@
   ))
 
 
-(p/pprint (schema->benchrun sch))
+;; (p/pprint (schema->benchrun sch))
 
 
-(a/str-replace #"int" "i"(string/join " " (map name (apply concat sch))))
+;; (a/str-replace #"int" "i"(string/join " " (map name (apply concat sch))))
 
 
 
 
-(def y {:q {:OP_query {:groupId "ObjectId('538fa43177143b548c76ecfd')", :active "true"}, :OP_orderby {:name "1"}}, :epoch 1401923247, :ns "mmsdbconfig.config.hostClusters", :q_plan "IXSCAN", :op "query", :q_norm ":$orderby<:fieldname>:$query<:fieldname:fieldname>&IXSCAN", :s "2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.hostClusters query: { $query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, $orderby: { name: 1 } } planSummary: IXSCAN { groupId: 1, name: 1 } ntoreturn:20 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:118 nreturned:0 reslen:20 0ms", :q_string "{ OP_query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, OP_orderby: { name: 1 } }", :ts "2014-06-04T23:07:27.745+0000", :conn "[conn50]"})
+;; (def y {:q {:OP_query {:groupId "ObjectId('538fa43177143b548c76ecfd')", :active "true"}, :OP_orderby {:name "1"}}, :epoch 1401923247, :ns "mmsdbconfig.config.hostClusters", :q_plan "IXSCAN", :op "query", :q_norm ":$orderby<:fieldname>:$query<:fieldname:fieldname>&IXSCAN", :s "2014-06-04T23:07:27.745+0000 [conn50] query mmsdbconfig.config.hostClusters query: { $query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, $orderby: { name: 1 } } planSummary: IXSCAN { groupId: 1, name: 1 } ntoreturn:20 ntoskip:0 keyUpdates:0 numYields:0 locks(micros) r:118 nreturned:0 reslen:20 0ms", :q_string "{ OP_query: { groupId: ObjectId('538fa43177143b548c76ecfd'), active: true }, OP_orderby: { name: 1 } }", :ts "2014-06-04T23:07:27.745+0000", :conn "[conn50]"})
 
 
-(quick-check-query [y])
+;; (quick-check-query [y])
 
-(def sch (query->perfschema (:q y)))
+;; (def sch (query->perfschema (:q y)))
 
 
-(p/pprint (take 30 (gen/sample (hg/generator sch))))
+;; (p/pprint (take 30 (gen/sample (hg/generator sch))))
 
 
 ;;---
-
-(defn mongo-query-map [_val db coll]
-  (mc/remove db coll) ;; remove all doc
-  (if (= (:cid _val) 100)
-    (mc/insert db coll {:cid 101} )
-    (mc/insert db coll _val )
-    )
-
-  (= _val (apply dissoc (mc/find-one-as-map db coll _val) [:_id])))
 
 (defn mongo-query-check-with-schema
   [sch]
@@ -223,16 +223,13 @@
 ;;        (:q (get q 0))
 ;;        " with schema "
 ;;        (query->perfschema (:q (get q 0))))
-    (tc/quick-check 500  (mongo-query-check-with-schema (query->perfschema (:q (get q 0))))  )
+    (tc/quick-check 500  (mongo-query-check-with-schema (query->perfschema (:q (get q 0)))) :seed 1405102093780 )
   )
 
-(quick-check-query [y])
-(def sch (query->perfschema (:q y)))
+;; (quick-check-query [y])
+;; (def sch (query->perfschema (:q y)))
 
 
 
-(def re (tc/quick-check 1000  (mongo-query-check-with-schema  sch)  ))
+;; (def re (tc/quick-check 1000  (mongo-query-check-with-schema  sch)  ))
 
-
-
-re

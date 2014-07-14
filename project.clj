@@ -27,6 +27,7 @@
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
 
+  :main thomas.core
 
   :cljsbuild {
     :builds [{:id "dev"

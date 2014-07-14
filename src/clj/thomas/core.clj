@@ -110,10 +110,12 @@
 (defonce server
   (run-jetty #'app {:port 8080 :join? false}))
 
+(defn -main [] (println "running"))
+
 
 (defn restart-server []
   (.stop server)
   (.start server))
 
 
-(restart-server)
+;; (restart-server)
